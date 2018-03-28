@@ -9,6 +9,6 @@ object EitherUtils {
     def foreach[U](f: B => U): Unit = e.right.foreach(f)
     def map[C](f: B => C): Either[A, C] = e.right.map(f)
     def flatMap[C](f: B => Either[A, C]): Either[A, C] = e.right.flatMap(f)
-    def withFilter(p: B => Boolean): Either[A, B] = e.withFilter(p)
+    def withFilter(p: B => Boolean): Either[A, B] = e.filterOrElse(p, throw new Exception("RightBiasedEither.withFilter failed"))
   }
 }

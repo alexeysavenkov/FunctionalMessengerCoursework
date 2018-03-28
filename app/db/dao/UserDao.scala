@@ -11,4 +11,6 @@ class UserDao {
   def findByPhone(phone: String): Option[User#TableElementType] = {
     User.filter(_.phone === phone).result.headOption.get()
   }
+
+  def insert(userRow: UserRow) = (User += userRow).exec()
 }

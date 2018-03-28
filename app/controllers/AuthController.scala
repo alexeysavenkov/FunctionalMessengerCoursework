@@ -19,18 +19,9 @@ import services.AuthService
 class AuthController @Inject()(cc: ControllerComponents, authService: AuthService)(implicit assetsFinder: AssetsFinder)
   extends AbstractController(cc) {
 
-  /**
-   * Create an Action to render an HTML page with a welcome message.
-   * The configuration in the `routes` file means that this method
-   * will be called when the application receives a `GET` request with
-   * a path of `/`.
-   */
-  def index = Action {
-    Ok(views.html.index("Your new application is ready."))
-  }
-
   import playUtils.EitherUtils.RightBiasedEither
 
+  val userWrites = Tables.userRowWrites
 
   def register = Action { req =>
 
@@ -40,7 +31,18 @@ class AuthController @Inject()(cc: ControllerComponents, authService: AuthServic
         result <- authService.register(user, avatar)
       } yield result
 
-    result.toResult(Tables.userRowWrites)
+    result.toResult(userWrites)
+  }
+
+  def login = Action { req =>
+
+    val result: Either[PlayError, UserRow] =
+      for {
+        (user, _) <- User.fromRequest(req)
+        result <- authService.login(user)
+      } yield result
+
+     result.toResult(userWrites)
   }
 
 }

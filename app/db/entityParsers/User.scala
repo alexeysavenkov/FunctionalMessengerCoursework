@@ -1,6 +1,7 @@
 package db.entityParsers
 
 import db.Tables.{User, UserRow}
+import org.apache.commons.codec.digest.DigestUtils
 import play.api.libs.json.{JsObject, JsValue, Json, Reads}
 import play.api.mvc.{AnyContent, Request}
 import playUtils.{JsonBodyParseError, PlayError}
@@ -16,15 +17,15 @@ object User extends JsonParsers[(UserRow, Option[UserAvatar])] {
     for {
       phone <- parse[String]("phone")
       password <- parse[String]("password")
-      name <- parse[String]("name")
+      name <- parseOptional[String]("name")
       avatar <- parseOptional[Int]("avatar")
       description <- parseOptional[String]("description")
     } yield {
-      val user = new UserRow(
-        id = -1,
+      val user = UserRow(
+        id = 1,
         phone = phone,
-        password = password,
-        name = Some(name),
+        password = DigestUtils.md5Hex(password),
+        name = name,
         description = description.getOrElse("")
       )
       val avatarOpt = avatar.map(UserAvatar)

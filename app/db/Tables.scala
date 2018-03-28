@@ -204,7 +204,8 @@ trait Tables {
    *  @param isbanned Database column isBanned SqlType(BIT), Default(false)
    *  @param ismoderator Database column isModerator SqlType(BIT), Default(false) */
   case class UserRow(id: Long, phone: String = "", password: String = "", name: Option[String] = None, description: String = "", isbanned: Boolean = false, ismoderator: Boolean = false, authToken: String = "")
-  val userRowWrites : Writes[UserRow] = Json.writes[UserRow]
+  import playUtils.OWritesOps._
+  val userRowWrites: Writes[UserRow] = Json.writes[UserRow].removeField("password")
   /** GetResult implicit for fetching UserRow objects using plain SQL queries */
   implicit def GetResultUserRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[String]], e3: GR[Boolean]): GR[UserRow] = GR{
     prs => import prs._
