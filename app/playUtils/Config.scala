@@ -1,0 +1,5 @@
+package playUtils
+
+class Config {
+
+}
