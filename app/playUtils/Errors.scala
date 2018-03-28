@@ -39,3 +39,5 @@ object DuplicateUserException extends PlayError(CONFLICT, "You are already regis
 object IncorrectCredentials extends PlayError(UNAUTHORIZED, "Incorrect phone or password")
 
 case class JsonBodyParseError(msg: String) extends PlayError(BAD_REQUEST, msg)
+
+object UserNotFound extends PlayError(NOT_FOUND, "User not found")

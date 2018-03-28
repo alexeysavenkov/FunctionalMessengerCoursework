@@ -14,3 +14,5 @@ GET     /assets/*file               controllers.Assets.versioned(file)
 
 POST    /register                   controllers.AuthController.register
 POST    /login                      controllers.AuthController.login
+
+GET     /user/:id                   controllers.UserController.getUserById(id : Long)
