@@ -19,8 +19,8 @@ class AuthService @Inject()(userDao : UserDao) {
     userDao.findByPhone(user.phone) match {
       case Some(duplicateUser) => Left(DuplicateUserException)
       case None =>
-        val authToken = new String(scala.util.Random.alphanumeric.take(32).toArray)
-        val userWithToken = user.copy(authToken = authToken)
+        val token = new String(scala.util.Random.alphanumeric.take(32).toArray)
+        val userWithToken = user.copy(authToken = token)
         userDao.insert(userWithToken)
         userDao.findByPhone(user.phone) match {
           case Some(newUser) => Right(newUser)

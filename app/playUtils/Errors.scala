@@ -41,3 +41,7 @@ object IncorrectCredentials extends PlayError(UNAUTHORIZED, "Incorrect phone or 
 case class JsonBodyParseError(msg: String) extends PlayError(BAD_REQUEST, msg)
 
 object UserNotFound extends PlayError(NOT_FOUND, "User not found")
+
+class NotFound(msg: String) extends PlayError(NOT_FOUND, msg)
+
+class Forbidden(msg: String) extends PlayError(FORBIDDEN, msg)

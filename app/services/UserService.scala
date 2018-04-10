@@ -9,7 +9,7 @@ import playUtils._
 
 
 @Singleton
-class UserService @Inject()(userDao : UserDao) {
+class UserService @Inject()(userDao : UserDao, attachmentService: AttachmentService) {
 
   def getUserById(id: Long): Either[PlayError, UserRow] = {
     userDao.findById(id) match {
@@ -18,8 +18,25 @@ class UserService @Inject()(userDao : UserDao) {
     }
   }
 
+  def getAllByQuery(query: String): Seq[UserRow] = {
+    userDao.findAllByQuery(query)
+  }
+
   def findByAuthToken(token: String): Option[UserRow] = {
     userDao.findByAuthToken(token)
+  }
+
+  def updateUserProfile(user: UserRow, avatarUrl: String): UserRow = {
+
+    val userWithAttachment =
+      if(avatarUrl.trim.nonEmpty) {
+        val attachment = attachmentService.add(avatarUrl)
+        user.copy(avatarid = Some(attachment.id.toInt))
+      } else {
+        user
+      }
+
+    userDao.update(userWithAttachment)
   }
 
 }

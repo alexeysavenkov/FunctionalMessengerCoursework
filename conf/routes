@@ -14,5 +14,11 @@ GET     /assets/*file               controllers.Assets.versioned(file)
 
 POST    /register                   controllers.AuthController.register
 POST    /login                      controllers.AuthController.login
+POST    /profile                    controllers.UserController.updateProfile()
 
+
+GET     /user/search                controllers.UserController.searchUsersByQuery(q : String)
 GET     /user/:id                   controllers.UserController.getUserById(id : Long)
+
+POST    /image                      controllers.ImageController.uploadImage()
+GET     /image/:id                  controllers.ImageController.getImage(id: Int)

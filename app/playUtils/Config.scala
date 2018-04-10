@@ -8,4 +8,6 @@ object Config {
  private val config = Play.current.configuration.underlying
 
  def getStr(key: String): String = config.getString(key)
+
+ def isDebug(): Boolean = config.getBoolean("debug")
 }

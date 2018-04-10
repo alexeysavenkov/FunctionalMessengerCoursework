@@ -5,6 +5,7 @@ import javax.inject._
 import db.Tables
 import db.Tables.UserRow
 import db.entityParsers.User
+import play.api.libs.json.JsArray
 import play.api.mvc._
 import playUtils.{ControllerWithAuthentication, LoggedInRequest, PlayError}
 import playUtils.RichErrorEither._
@@ -22,6 +23,21 @@ class UserController @Inject()(cc: ControllerComponents, userService: UserServic
 
   val userWrites = Tables.userRowWrites
 
+  def updateProfile() = loggedInAction { case LoggedInRequest(user, req) =>
+    req.body.asJson match {
+      case Some(json) =>
+        val name = (json \ "name").as[String]
+        val description = (json \ "description").as[String]
+        val avatarUrl = (json \ "avatarUrl").as[String]
+
+        val updatedUser = userService.updateUserProfile(user.copy(name = Some(name), description = description), avatarUrl)
+
+        Ok(userWrites.writes(updatedUser))
+
+      case None => NoContent
+    }
+  }
+
   def getUserById(id: Long) = loggedInAction { case LoggedInRequest(user, req) =>
     userService.getUserById(id).toResult(userWrites)
   }
@@ -30,9 +46,11 @@ class UserController @Inject()(cc: ControllerComponents, userService: UserServic
 //
 //  }
 //
-//  def searchUsersByQuery(query: String) = Action {
-//
-//  }
+  def searchUsersByQuery(query: String) = loggedInAction { req =>
+    val users = userService.getAllByQuery(query)
+
+    Ok(JsArray(users.map(userWrites.writes).toList))
+  }
 //
 //  def sendFriendRequest()
 

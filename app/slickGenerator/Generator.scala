@@ -7,9 +7,9 @@ object Generator extends App {
 //  val url = "jdbc:h2:mem:test;INIT=runscript from 'app/slickGenerator/sql/create.sql'"
   //val db = Database.forURL(url, driver = "org.h2.Driver")
   val profile = "slick.jdbc.MySQLProfile"
-  val url = "jdbc:mysql://mmop-db.cs9tngvh7qnb.us-east-2.rds.amazonaws.com/ais?nullNamePatternMatchesAll=true"
+  val url = "jdbc:mysql://localhost/ais?nullNamePatternMatchesAll=true&useLegacyDatetimeCode=false&serverTimezone=UTC"//"jdbc:mysql://mmop-db.cs9tngvh7qnb.us-east-2.rds.amazonaws.com/ais?nullNamePatternMatchesAll=true"
   val jdbcDriver = "com.mysql.jdbc.Driver"
-  val user = "admin"
+  val user = "root"
   val password = "zzzz1234"
   val pkg = "com.example.models"
   val outputFolder = "/Users/alosha/IdeaProjects/FunctionalCoursework/slick"
