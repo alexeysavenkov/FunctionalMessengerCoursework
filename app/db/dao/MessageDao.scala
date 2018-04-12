@@ -15,4 +15,9 @@ class MessageDao {
       if msgAtt.attachmentid === attachment.id
     } yield msg
   }
+
+  def getByUser(userId : Long) : Seq[MessageRow] = {
+    Message.filter(_.userid === userId).sortBy(_.id).result.get()
+  }
+
 }

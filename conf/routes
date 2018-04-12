@@ -17,8 +17,27 @@ POST    /login                      controllers.AuthController.login
 POST    /profile                    controllers.UserController.updateProfile()
 
 
+GET     /user/friends               controllers.UserController.friends()
+GET     /user/friendRequests        controllers.UserController.friendRequests()
 GET     /user/search                controllers.UserController.searchUsersByQuery(q : String)
 GET     /user/:id                   controllers.UserController.getUserById(id : Long)
+GET     /user/:id/info              controllers.UserController.getUserInfoById(id : Long)
+
+POST    /user/:id/friendRequest     controllers.UserController.friendRequest(id: Long, cancel: Int?=0)
+POST    /user/:id/blacklist         controllers.UserController.blacklist(id: Long, cancel: Int?=0)
+POST    /user/:id/report            controllers.UserController.report(id: Long, reason: String)
+
+
 
 POST    /image                      controllers.ImageController.uploadImage()
 GET     /image/:id                  controllers.ImageController.getImage(id: Int)
+
+GET     /dialogs                    controllers.DialogController.getAllDialogs()
+POST    /dialog/create              controllers.DialogController.create(name: String)
+GET     /dialog/:id/messages        controllers.DialogController.getAllMessages(id: Long)
+POST    /dialog/:id/sendMessage     controllers.DialogController.sendMessage(id: Long, message: String)
+#DELETE  /message/:id                controllers.DialogController.deleteMessage(id: Long)
+
+GET     /moderator/unresolvedComplaints  controllers.ModeratorController.unresolvedComplaints()
+POST    /moderator/banUser               controllers.ModeratorController.banUser(id: Int)
+POST    /moderator/forgiveUser           controllers.ModeratorController.forgiveUser(id: Int)

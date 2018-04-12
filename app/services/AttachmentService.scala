@@ -61,9 +61,13 @@ class AttachmentService @Inject() (attachmentDao: AttachmentDao, dialogService: 
 
     def getById(attachmentId: Long, user: UserRow): Either[PlayError, AttachmentRow] = {
         attachmentDao.getById(attachmentId) match {
-            case Right(res) if user.avatarid.contains(attachmentId) => Right(res)
+            case Right(res) if attachmentIsAvatar(res) => Right(res)
             case Right(res) if dialogService.getAllDialogsByUserAndAttachment(user, res).nonEmpty => Right(res)
             case Right(_) => Left(new Forbidden("You don't have access to this message"))
         }
+    }
+
+    def attachmentIsAvatar(attachmentRow: AttachmentRow): Boolean = {
+        dialogService.getDialogByAttachment(attachmentRow).isEmpty
     }
 }

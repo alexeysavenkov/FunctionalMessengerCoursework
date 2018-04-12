@@ -297,11 +297,11 @@ trait Tables {
    *  @param dialogid Database column dialogId SqlType(INT UNSIGNED)
    *  @param lastreadmessageid Database column lastReadMessageId SqlType(INT UNSIGNED), Default(None)
    *  @param isadmin Database column isAdmin SqlType(INT UNSIGNED), Default(None) */
-  case class UserdialogRow(userid: Long, dialogid: Long, lastreadmessageid: Option[Long] = None, isadmin: Option[Long] = None)
+  case class UserdialogRow(userid: Long, dialogid: Long, lastreadmessageid: Option[Long] = None, isadmin: Boolean = false)
   /** GetResult implicit for fetching UserdialogRow objects using plain SQL queries */
   implicit def GetResultUserdialogRow(implicit e0: GR[Long], e1: GR[Option[Long]]): GR[UserdialogRow] = GR{
     prs => import prs._
-      UserdialogRow.tupled((<<[Long], <<[Long], <<?[Long], <<?[Long]))
+      UserdialogRow.tupled((<<[Long], <<[Long], <<?[Long], <<[Boolean]))
   }
   /** Table description of table UserDialog. Objects of this class serve as prototypes for rows in queries. */
   class Userdialog(_tableTag: Tag) extends profile.api.Table[UserdialogRow](_tableTag, Some("ais"), "UserDialog") {
@@ -310,13 +310,13 @@ trait Tables {
     def ? = (Rep.Some(userid), Rep.Some(dialogid), lastreadmessageid, isadmin).shaped.<>({r=>import r._; _1.map(_=> UserdialogRow.tupled((_1.get, _2.get, _3, _4)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column userId SqlType(INT UNSIGNED), AutoInc */
-    val userid: Rep[Long] = column[Long]("userId", O.AutoInc)
+    val userid: Rep[Long] = column[Long]("userId")
     /** Database column dialogId SqlType(INT UNSIGNED) */
     val dialogid: Rep[Long] = column[Long]("dialogId")
     /** Database column lastReadMessageId SqlType(INT UNSIGNED), Default(None) */
     val lastreadmessageid: Rep[Option[Long]] = column[Option[Long]]("lastReadMessageId", O.Default(None))
     /** Database column isAdmin SqlType(INT UNSIGNED), Default(None) */
-    val isadmin: Rep[Option[Long]] = column[Option[Long]]("isAdmin", O.Default(None))
+    val isadmin: Rep[Boolean] = column[Boolean]("isAdmin", O.Default(false))
 
     /** Foreign key referencing Dialog (database name userdialog_ibfk_2) */
     lazy val dialogFk = foreignKey("userdialog_ibfk_2", dialogid, Dialog)(r => r.id, onUpdate=ForeignKeyAction.Cascade, onDelete=ForeignKeyAction.Cascade)

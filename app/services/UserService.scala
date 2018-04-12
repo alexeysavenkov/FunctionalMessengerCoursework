@@ -8,6 +8,7 @@ import db.Tables.UserRow
 import playUtils._
 
 
+case class UserInfo(userId: Long, isFriend: Boolean, friendRequestSent: Boolean, friendRequestReceived: Boolean, isBlacklisted: Boolean, youAreBlacklisted: Boolean)
 @Singleton
 class UserService @Inject()(userDao : UserDao, attachmentService: AttachmentService) {
 
@@ -39,4 +40,42 @@ class UserService @Inject()(userDao : UserDao, attachmentService: AttachmentServ
     userDao.update(userWithAttachment)
   }
 
+  def getUserInfoById(currentUser: UserRow, id: Long): UserInfo = {
+    UserInfo(
+      userId = id,
+      isFriend = userDao.areFriends(currentUser.id, id),
+      friendRequestSent = userDao.isFriendRequestSent(from = currentUser.id, to = id),
+      friendRequestReceived = userDao.isFriendRequestSent(from = id, to = currentUser.id),
+      isBlacklisted = userDao.isBlacklisted(who = id, by = currentUser.id),
+      youAreBlacklisted = userDao.isBlacklisted(who = currentUser.id, by = id)
+    )
+  }
+
+  def createFriendRequest(from: Long, to: Long): Unit = {
+    userDao.createFriendRequest(from, to)
+  }
+
+  def cancelFriendRequest(from: Long, to: Long): Unit = {
+    userDao.cancelFriendRequest(from, to)
+  }
+
+  def createBlacklist(blacklist: Long, by: Long): Unit = {
+    userDao.createBlacklist(blacklist, by)
+  }
+
+  def cancelBlacklist(blacklist: Long, by: Long): Unit = {
+    userDao.cancelBlacklist(blacklist, by)
+  }
+
+  def report(currentUser: UserRow, userId: Long, reason: String): Unit = {
+    userDao.report(currentUser, userId, reason)
+  }
+
+  def getFriends(user: UserRow): Seq[UserRow] = {
+    userDao.getFriends(user)
+  }
+
+  def getFriendRequests(user: UserRow): Seq[UserRow] = {
+    userDao.getFriendRequests(user)
+  }
 }

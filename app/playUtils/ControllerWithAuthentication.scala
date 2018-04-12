@@ -22,7 +22,7 @@ class ControllerWithAuthentication(cc: ControllerComponents, userService: UserSe
           userService.getUserById(1).toOption
         } else {
           for {
-            token <- request.headers.get("Authorization")
+            token <- request.headers.get("Auth").orElse(request.getQueryString("auth"))
             user <- userService.findByAuthToken(token)
           } yield user
         }
