@@ -41,3 +41,4 @@ POST    /dialog/:id/sendMessage     controllers.DialogController.sendMessage(id:
 GET     /moderator/unresolvedComplaints  controllers.ModeratorController.unresolvedComplaints()
 POST    /moderator/banUser               controllers.ModeratorController.banUser(id: Int)
 POST    /moderator/forgiveUser           controllers.ModeratorController.forgiveUser(id: Int)
+GET     /report                          controllers.ModeratorController.report()

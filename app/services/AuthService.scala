@@ -32,6 +32,7 @@ class AuthService @Inject()(userDao : UserDao) {
 
   def login(user: UserRow): Either[PlayError, UserRow] = {
     userDao.findByPhone(user.phone) match {
+      case Some(user) if user.isbanned => Left(new PlayError(401, "You have been banned"))
       case Some(userToLogin) if userToLogin.password == user.password => Right(userToLogin)
       case _ => Left(IncorrectCredentials)
     }

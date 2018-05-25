@@ -13,6 +13,7 @@ class ModeratorDao {
     sql"""
           |SELECT User.*, GROUP_CONCAT(reason SEPARATOR '; ') AS reasons, COUNT(*) AS cnt
           |	FROM User JOIN UserComplaint ON User.id = UserComplaint.userWhoWasAccused
+          | WHERE NOT isResolved
           |	GROUP BY User.id
           |	ORDER BY COUNT(*) DESC
         """.stripMargin.as[(UserRow, String, Int)].get()
@@ -55,7 +56,7 @@ class ModeratorDao {
     sql"""
         | SELECT COUNT(*) FROM Dialog
         |   WHERE Dialog.id NOT IN (
-        |     SELECT DISTINCT(dialogId) FROM Message GROUP BY (dialogId, userId) HAVING COUNT(*) < $n
+        |     SELECT DISTINCT(dialogId) FROM Message GROUP BY dialogId, userId HAVING COUNT(*) < $n
         |   )
       """.stripMargin.as[Int].get().headOption.getOrElse(0)
   }

@@ -63,4 +63,21 @@ class ModeratorController @Inject()(cc: ControllerComponents, userService: UserS
     }
   }
 
+  def report() = Action { req =>
+    val stats1 = moderatorDao.countOfModeratorsWithAllResolvedComplaints()
+    val stats2 = moderatorDao.countOfUsersWithAtLeastNFriends(2)
+    val stats3 = moderatorDao.countOfUsersWithAtLeastNMessages(3)
+    val stats4 = moderatorDao.countNumberOfDialogsWhereEveryoneHasWrittenAtLeastNTimes(3)
+
+    val res =
+      s"""
+        | Count of moderators with all resolved complaints: $stats1
+        | Count of users with at least 2 friends: $stats2
+        | Count of users with at least 3 messages: $stats3
+        | Count of dialogs where ALL members have written at least 3 messages each: $stats4
+      """.stripMargin
+
+    Ok(res)
+  }
+
 }

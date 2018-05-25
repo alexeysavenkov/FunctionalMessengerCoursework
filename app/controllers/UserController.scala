@@ -11,13 +11,19 @@ import playUtils.{ControllerWithAuthentication, LoggedInRequest, PlayError}
 import playUtils.RichErrorEither._
 import services.{AuthService, UserInfo, UserService}
 
-/**
- * This controller creates an `Action` to handle HTTP requests to the
- * application's home page.
- */
 @Singleton
 class UserController @Inject()(cc: ControllerComponents, userService: UserService)(implicit assetsFinder: AssetsFinder)
   extends ControllerWithAuthentication(cc, userService) {
+
+  def friends() = loggedInAction { case LoggedInRequest(user, req) =>
+
+    val friends =
+      userService.getFriends(user)
+        .map(u => (u, userService.getUserInfoById(user, u.id)))
+        .map(userWithInfoWrites.writes)
+
+    Ok(JsArray(friends))
+  }
 
   import playUtils.EitherUtils.RightBiasedEither
 
@@ -97,10 +103,7 @@ class UserController @Inject()(cc: ControllerComponents, userService: UserServic
 
   }
 
-  def friends() = loggedInAction { case LoggedInRequest(user, req) =>
-    val friends = userService.getFriends(user).map(u => (u, userService.getUserInfoById(user, u.id))).map(userWithInfoWrites.writes)
-    Ok(JsArray(friends))
-  }
+
 
   def friendRequests() = loggedInAction { case LoggedInRequest(user, req) =>
     val friends = userService.getFriendRequests(user).map(u => (u, userService.getUserInfoById(user, u.id))).map(userWithInfoWrites.writes)

@@ -23,7 +23,7 @@ class AuthController @Inject()(cc: ControllerComponents, authService: AuthServic
 
   val userWrites = Tables.userRowWrites
 
-  def register = Action { req =>
+  def register() = Action { req =>
 
     val result: Either[PlayError, UserRow] =
       for {
@@ -34,7 +34,7 @@ class AuthController @Inject()(cc: ControllerComponents, authService: AuthServic
     result.toResult(userWrites)
   }
 
-  def login = Action { req =>
+  def login() = Action { req =>
 
     val result: Either[PlayError, UserRow] =
       for {
@@ -44,5 +44,7 @@ class AuthController @Inject()(cc: ControllerComponents, authService: AuthServic
 
      result.toResult(userWrites)
   }
+
+
 
 }
